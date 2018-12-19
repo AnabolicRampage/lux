@@ -7,6 +7,9 @@
 
 #include "primitives/transaction.h"
 #include "script/standard.h"
+#include "wallet.h"
+
+#include <boost/optional.hpp>
 
 /** Coin Control Features. */
 class CCoinControl
@@ -29,6 +32,8 @@ public:
     bool fOverrideFeeRate;
     //! Feerate to use if overrideFeeRate is true
     CFeeRate nFeeRate;
+    //! Custom change type, ignored if destChange is set, defaults to g_change_type
+    boost::optional<OutputType> g_change_type;
 
     CCoinControl()
     {
@@ -38,6 +43,7 @@ public:
     void SetNull()
     {
         destChange = CNoDestination();
+        g_change_type.reset();
         setSelected.clear();
         useInstanTX = false;
         useDarksend = true;

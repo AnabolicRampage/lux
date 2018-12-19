@@ -76,6 +76,8 @@ public:
 
     EditStatus getEditStatus() const { return editStatus; }
 
+    OutputType GetDefaultAddressType() const;
+
 private:
     WalletModel* walletModel;
     CWallet* wallet;

@@ -79,7 +79,7 @@ bool EditAddressDialog::saveCurrentRow()
             mode == NewSendingAddress ? AddressTableModel::Send : AddressTableModel::Receive,
             ui->labelEdit->text(),
             ui->addressEdit->text(),
-            g_address_type);
+            model->GetDefaultAddressType());
         break;
     case EditReceivingAddress:
     case EditSendingAddress:

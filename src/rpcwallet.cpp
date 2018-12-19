@@ -334,8 +334,7 @@ UniValue getnewaddress(const UniValue& params, bool fHelp)
 
     OutputType output_type = g_address_type;
     if (!params[1].isNull()) {
-        output_type = ParseOutputType(params[1].get_str(), g_address_type);
-        if (output_type == OUTPUT_TYPE_NONE) {
+        if (!ParseOutputType(params[1].get_str(), output_type)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", params[1].get_str()));
         }
     }
@@ -415,10 +414,9 @@ UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
     if (!pwalletMain->IsLocked())
         pwalletMain->TopUpKeyPool();
 
-    OutputType output_type = g_change_type != OUTPUT_TYPE_NONE ? g_change_type : g_address_type;
+    OutputType output_type = g_change_type != OUTPUT_AUTO_CHANGE ? g_change_type : g_address_type;
     if (!params[0].isNull()) {
-        output_type = ParseOutputType(params[0].get_str(), output_type);
-        if (output_type == OUTPUT_TYPE_NONE) {
+        if (!ParseOutputType(params[0].get_str(), output_type)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", params[0].get_str()));
         }
     }

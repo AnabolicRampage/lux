@@ -106,6 +106,7 @@ enum OutputType : int
     OUTPUT_TYPE_LEGACY,
     OUTPUT_TYPE_P2SH_SEGWIT,
     OUTPUT_TYPE_BECH32,
+    OUTPUT_AUTO_CHANGE,
 
     OUTPUT_TYPE_DEFAULT = OUTPUT_TYPE_LEGACY
 };
@@ -599,7 +600,7 @@ public:
     CAmount GetWatchOnlyBalance() const;
     CAmount GetUnconfirmedWatchOnlyBalance() const;
     CAmount GetImmatureWatchOnlyBalance() const;
-    OutputType TransactionChangeType(const std::vector<std::pair<CScript, CAmount> >& vecSend);
+    OutputType TransactionChangeType(OutputType g_change_type, const std::vector<std::pair<CScript, CAmount> >& vecSend);
     bool CreateTransaction(const std::vector<std::pair<CScript, CAmount> >& vecSend,
                            CWalletTx& wtxNew,
                            CReserveKey& reservekey,
@@ -1574,7 +1575,7 @@ private:
     std::vector<char> _ssExtra;
 };
 
-OutputType ParseOutputType(const std::string& str, OutputType default_type = OUTPUT_TYPE_DEFAULT);
+bool ParseOutputType(const std::string& str, OutputType default_type = OUTPUT_TYPE_DEFAULT);
 const std::string& FormatOutputType(OutputType type);
 
 /**

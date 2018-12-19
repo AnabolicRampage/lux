@@ -45,11 +45,13 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(const PlatformStyle *platformStyle, QWidg
     }
 
 
-    if (model->getDefaultAddressType() == OUTPUT_TYPE_BECH32) {
+    if (model->getDefaultAddressType() == OutputType::OUTPUT_TYPE_BECH32) {
         ui->useBech32->setCheckState(Qt::Checked);
     } else {
         ui->useBech32->setCheckState(Qt::Unchecked);
     }
+
+    //ui->useBech32->setVisible(model->getDefaultAddressType() != OutputType::OUTPUT_TYPE_LEGACY);
 
     // context menu actions
     QAction *copyURIAction = new QAction(tr("Copy URI"), this);

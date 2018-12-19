@@ -146,6 +146,8 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
             if (!pwalletMain->AddKeyPubKey(key, pubkey))
                 throw JSONRPCError(RPC_WALLET_ERROR, "Error adding key to wallet");
 
+            pwalletMain->LearnAllRelatedScripts(pubkey);
+
             // whenever a key is imported, we need to scan the whole chain
             pwalletMain->nTimeFirstKey = 1; // 0 would be considered 'no value'
             pwalletMain->LearnAllRelatedScripts(pubkey);
@@ -417,8 +419,11 @@ UniValue importpubkey(const UniValue& params, bool fHelp)
 
         LOCK2(cs_main, pwalletMain->cs_wallet);
 
-        ImportAddress(dest, strLabel);
+        for (const auto& dest : GetAllDestinationsForKey(pubKey)) {
+            ImportAddress(dest, strLabel);
+        }
         ImportScript(GetScriptForRawPubKey(pubKey), strLabel, false);
+        pwalletMain->LearnAllRelatedScripts(pubKey);
 
         if (fRescan) {
             pwalletMain->ScanForWalletTransactions(chainActive.Genesis(), true);
