@@ -33,7 +33,7 @@ public:
     //! Feerate to use if overrideFeeRate is true
     CFeeRate nFeeRate;
     //! Custom change type, ignored if destChange is set, defaults to g_change_type
-    boost::optional<OutputType> g_change_type;
+    boost::optional<OutputType> change_type;
 
     CCoinControl()
     {
@@ -43,7 +43,7 @@ public:
     void SetNull()
     {
         destChange = CNoDestination();
-        g_change_type.reset();
+        change_type.reset();
         setSelected.clear();
         useInstanTX = false;
         useDarksend = true;

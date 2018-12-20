@@ -20,7 +20,7 @@
 #include <QTimer>
 #include <QMessageBox>
 
-enum OutputType : int;
+enum class OutputType;
 
 class AddressTableModel;
 class OptionsModel;

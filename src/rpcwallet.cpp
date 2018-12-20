@@ -332,7 +332,7 @@ UniValue getnewaddress(const UniValue& params, bool fHelp)
     if (params.size() > 0)
         strAccount = AccountFromValue(params[0]);
 
-    OutputType output_type = g_address_type;
+    OutputType output_type = pwalletMain->g_address_type;
     if (!params[1].isNull()) {
         if (!ParseOutputType(params[1].get_str(), output_type)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", params[1].get_str()));
@@ -414,7 +414,7 @@ UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
     if (!pwalletMain->IsLocked())
         pwalletMain->TopUpKeyPool();
 
-    OutputType output_type = g_change_type != OUTPUT_AUTO_CHANGE ? g_change_type : g_address_type;
+    OutputType output_type = pwalletMain->g_address_type;
     if (!params[0].isNull()) {
         if (!ParseOutputType(params[0].get_str(), output_type)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", params[0].get_str()));
@@ -1223,6 +1223,7 @@ UniValue addmultisigaddress(const UniValue& params, bool fHelp)
             "       ...,\n"
             "     ]\n"
             "3. \"account\"      (string, optional) An account to assign the addresses to.\n"
+            "4. \"address_type\"                 (string, optional) The address type to use. Options are \"legacy\", \"p2sh-segwit\", and \"bech32\". Default is set by -addresstype.\n"
 
             "\nResult:\n"
             "{\n"
@@ -1256,10 +1257,17 @@ UniValue addmultisigaddress(const UniValue& params, bool fHelp)
         }
     }
 
+    OutputType output_type = pwalletMain->g_address_type;
+    if (!params[3].isNull()) {
+        if (output_type == OutputType::OUTPUT_AUTO_CHANGE) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", params[3].get_str()));
+        }
+    }
+
     // Construct using pay-to-script-hash:
     CScript inner = CreateMultisigRedeemscript(required, pubkeys);
     pwalletMain->AddCScript(inner);
-    CTxDestination dest = pwalletMain->AddAndGetDestinationForScript(inner, g_address_type);
+    CTxDestination dest = pwalletMain->AddAndGetDestinationForScript(inner, output_type);
     pwalletMain->SetAddressBook(dest, strAccount, "send");
 
     UniValue result(UniValue::VOBJ);

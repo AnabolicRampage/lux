@@ -345,8 +345,8 @@ QString AddressTableModel::addRow(const QString& type, const QString& label, con
                 return QString();
             }
         }
-        wallet->LearnRelatedScripts(newKey, GetDefaultAddressType());
-        strAddress = EncodeDestination(GetDestinationForKey(newKey, GetDefaultAddressType()));
+        wallet->LearnRelatedScripts(newKey, wallet->g_address_type);
+        strAddress = EncodeDestination(GetDestinationForKey(newKey, wallet->g_address_type));
     } else {
         return QString();
     }
@@ -405,9 +405,4 @@ int AddressTableModel::lookupAddress(const QString& address) const
 void AddressTableModel::emitDataChanged(int idx)
 {
     Q_EMIT dataChanged(index(idx, 0, QModelIndex()), index(idx, columns.length() - 1, QModelIndex()));
-}
-
-OutputType AddressTableModel::GetDefaultAddressType() const
-{
-    return g_address_type;
 }

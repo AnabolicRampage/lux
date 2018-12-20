@@ -1036,13 +1036,13 @@ bool AppInit2()
     bSpendZeroConfChange = GetArg("-spendzeroconfchange", true);
     fSendFreeTransactions = GetArg("-sendfreetransactions", false);
 
-    if (!GetArg("-addresstype",  "").empty() && !ParseOutputType(GetArg("-addresstype", ""), g_address_type)) {
+    if (!GetArg("-addresstype",  "").empty() && !ParseOutputType(GetArg("-addresstype", ""), pwalletMain->g_address_type)) {
         return InitError(strprintf(_("Unknown address type '%s'"), GetArg("-addresstype", "")));
     }
 
     // If changetype is set in config file or parameter, check that it's valid.
     // Default to OUTPUT_TYPE_NONE if not set.
-    if (!GetArg("-changetype", "").empty() && !ParseOutputType(GetArg("-changetype", ""), g_change_type)) {
+    if (!GetArg("-changetype", "").empty() && !ParseOutputType(GetArg("-changetype", ""), pwalletMain->g_change_type)) {
         return InitError(strprintf(_("Unknown change type '%s'"), GetArg("-changetype", "")));
     }
 
@@ -1732,6 +1732,7 @@ bool AppInit2()
                     return InitError(_("Mnemonic passphrase is too long, must be at most 256 characters"));
                 // generate a new master key
                 pwalletMain->GenerateNewHDChain();
+                pwalletMain->SetMinVersion(FEATURE_HD);
             }
 
             CPubKey newDefaultKey;

@@ -8,12 +8,13 @@
 #include "ui_editaddressdialog.h"
 
 #include "addresstablemodel.h"
+#include "wallet.h"
+
 #include "guiutil.h"
 
 #include <QDataWidgetMapper>
 #include <QMessageBox>
 
-extern OutputType g_address_type;
 
 EditAddressDialog::EditAddressDialog(Mode mode, QWidget* parent) : QDialog(parent),
                                                                    ui(new Ui::EditAddressDialog),
@@ -79,7 +80,7 @@ bool EditAddressDialog::saveCurrentRow()
             mode == NewSendingAddress ? AddressTableModel::Send : AddressTableModel::Receive,
             ui->labelEdit->text(),
             ui->addressEdit->text(),
-            model->GetDefaultAddressType());
+            DEFAULT_ADDRESS_TYPE);
         break;
     case EditReceivingAddress:
     case EditSendingAddress:

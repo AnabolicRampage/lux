@@ -270,7 +270,7 @@ public:
         // LUX BIP44 coin type is '1'
         nExtCoinType = 1;
 
-        bech32_hrp = "bc";
+        bech32_hrp = "LUX";
 
         convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
 

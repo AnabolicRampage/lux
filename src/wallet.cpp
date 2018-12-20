@@ -51,8 +51,6 @@ bool bSpendZeroConfChange = true;
 bool fSendFreeTransactions = false;
 bool fPayAtLeastCustomFee = true;
 bool fWalletProcessingMode = false;
-OutputType g_address_type = OUTPUT_TYPE_DEFAULT;
-OutputType g_change_type = OUTPUT_TYPE_DEFAULT;
 bool fCheckUpdates = CHECKUPDATES;
 bool bZeroBalanceAddressToken = DEFAULT_ZERO_BALANCE_ADDRESS_TOKEN;
 bool fNotUseChangeAddress = DEFAULT_NOT_USE_CHANGE_ADDRESS;
@@ -2816,11 +2814,11 @@ bool CWallet::ConvertList(std::vector<CTxIn> vCoins, std::vector<int64_t>& vecAm
     return true;
 }
 
-OutputType CWallet::TransactionChangeType(OutputType g_change_type, const std::vector<std::pair<CScript, CAmount> >& vecSend)
+OutputType CWallet::TransactionChangeType(OutputType change_type, const std::vector<std::pair<CScript, CAmount> >& vecSend)
 {
     // If -changetype is specified, always use that change type.
-    if (g_change_type != OutputType::OUTPUT_AUTO_CHANGE) {
-        return g_change_type;
+    if (change_type != OutputType::OUTPUT_AUTO_CHANGE) {
+        return change_type;
     }
 
     // if g_address_type is legacy, use legacy address as change (even
@@ -3045,7 +3043,7 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend, 
                                 return false;
                             }
 
-                            const OutputType change_type = TransactionChangeType(coinControl->g_change_type ? *coinControl->g_change_type : g_change_type, vecSend);
+                            const OutputType change_type = TransactionChangeType(coinControl->change_type ? *coinControl->change_type : g_change_type, vecSend);
 
                             LearnRelatedScripts(vchPubKey, change_type);
                             scriptChange = GetScriptForDestination(GetDestinationForKey(vchPubKey, change_type));
@@ -4654,16 +4652,16 @@ static const std::string OUTPUT_TYPE_STRING_LEGACY = "legacy";
 static const std::string OUTPUT_TYPE_STRING_P2SH_SEGWIT = "p2sh-segwit";
 static const std::string OUTPUT_TYPE_STRING_BECH32 = "bech32";
 
-bool ParseOutputType(const std::string& type, OutputType default_type)
+bool ParseOutputType(const std::string& type, OutputType& output_type)
 {
     if (type == OUTPUT_TYPE_STRING_LEGACY) {
-        default_type = OutputType::OUTPUT_TYPE_LEGACY;
+        output_type = OutputType::OUTPUT_TYPE_LEGACY;
         return true;
     } else if (type == OUTPUT_TYPE_STRING_P2SH_SEGWIT) {
-        default_type = OutputType::OUTPUT_TYPE_P2SH_SEGWIT;
+        output_type = OutputType::OUTPUT_TYPE_P2SH_SEGWIT;
         return true;
     } else if (type == OUTPUT_TYPE_STRING_BECH32) {
-        default_type = OutputType::OUTPUT_TYPE_BECH32;
+        output_type = OutputType::OUTPUT_TYPE_BECH32;
         return true;
     }
     return false;

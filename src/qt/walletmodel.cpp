@@ -849,7 +849,7 @@ bool WalletModel::IsSpendable(const CTxDestination& dest) const {
 
 OutputType WalletModel::getDefaultAddressType() const
 {
-    return g_address_type;
+    return DEFAULT_ADDRESS_TYPE;
 }
 
 std::vector<CTokenInfo> WalletModel::getInvalidTokens()

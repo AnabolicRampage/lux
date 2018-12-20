@@ -100,7 +100,7 @@ enum WalletFeature {
     FEATURE_LATEST = 61000
 };
 
-enum OutputType : int
+enum class OutputType
 {
     OUTPUT_TYPE_NONE,
     OUTPUT_TYPE_LEGACY,
@@ -111,8 +111,8 @@ enum OutputType : int
     OUTPUT_TYPE_DEFAULT = OUTPUT_TYPE_LEGACY
 };
 
-extern OutputType g_address_type;
-extern OutputType g_change_type;
+constexpr OutputType DEFAULT_ADDRESS_TYPE{OutputType::OUTPUT_TYPE_DEFAULT};
+constexpr OutputType DEFAULT_CHANGE_TYPE{OutputType::OUTPUT_TYPE_DEFAULT};
 
 enum AvailableCoinsType {
     ALL_COINS = 1,
@@ -600,7 +600,7 @@ public:
     CAmount GetWatchOnlyBalance() const;
     CAmount GetUnconfirmedWatchOnlyBalance() const;
     CAmount GetImmatureWatchOnlyBalance() const;
-    OutputType TransactionChangeType(OutputType g_change_type, const std::vector<std::pair<CScript, CAmount> >& vecSend);
+    OutputType TransactionChangeType(OutputType change_type, const std::vector<std::pair<CScript, CAmount> >& vecSend);
     bool CreateTransaction(const std::vector<std::pair<CScript, CAmount> >& vecSend,
                            CWalletTx& wtxNew,
                            CReserveKey& reservekey,
@@ -633,6 +633,8 @@ public:
 
     static CFeeRate minTxFee;
     static CAmount GetMinimumFee(unsigned int nTxBytes, unsigned int nConfirmTarget, const CTxMemPool& pool);
+    OutputType g_address_type{DEFAULT_ADDRESS_TYPE};
+    OutputType g_change_type{DEFAULT_CHANGE_TYPE};
 
     bool NewKeyPool();
     size_t KeypoolCountExternalKeys();
@@ -1575,7 +1577,7 @@ private:
     std::vector<char> _ssExtra;
 };
 
-bool ParseOutputType(const std::string& str, OutputType default_type = OUTPUT_TYPE_DEFAULT);
+bool ParseOutputType(const std::string& str, OutputType& output_type);
 const std::string& FormatOutputType(OutputType type);
 
 /**
