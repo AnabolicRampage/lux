@@ -815,7 +815,7 @@ bool Stake::SelectStakeCoins(CWallet* wallet, std::set <std::pair<const CWalletT
     if (nSelectionPeriod < nStakingRoundPeriod) {
         nSelectionPeriod = nStakingRoundPeriod;
     }
-    if (nTime - nLastSelectTime < nSelectionPeriod) {
+    if (nTime - nLastSelectTime < nSelectionPeriod / 20) {
         return false;
     }
 
@@ -1005,8 +1005,8 @@ bool Stake::CreateCoinStake(CWallet* wallet, const CKeyStore& keystore, unsigned
 //            nStakeCoinAgeSum += coinAge;
 //        }
 
-        // iterates each utxo inside of CheckStakeKernelHash()
-        if (CheckHash(pindex->pprev, nBits, block, *(pcoin.first), prevoutStake, nTxNewTime, hashProofOfStake)) {
+        // check if it matches target...
+        if (CheckHash(pIndex0->pprev, nBits, block, *(pcoin.first), prevoutStake, nTxNewTime, hashProofOfStake)) {
             //Double check that this will pass time requirements
             if (nTxNewTime <= chainActive.Tip()->GetMedianTimePast()) {
                 LogPrintf("%s: stake found, but it is too far in the past \n", __func__);
